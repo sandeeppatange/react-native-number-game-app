@@ -1,14 +1,19 @@
 import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import PrimaryButton from "../components/ui/PrimaryButton";
+import Title from "../components/ui/Title";
+import InstructionText from "../components/ui/InstructionText";
+import Card from "../components/ui/Card";
 
 const GameOverScreen = ({ roundsNumber, userNumber, onRestart }) => {
   return (
     <View style={styles.screen}>
-      <Text>The Game is Over!</Text>
-      <Text>Number of rounds: {roundsNumber}</Text>
-      <Text>Number was: {userNumber}</Text>
-      <PrimaryButton onPress={onRestart}>START NEW GAME</PrimaryButton>
+      <Title>The Game is Over!</Title>
+      <Card>
+        <InstructionText>Number was: {userNumber}</InstructionText>
+        <InstructionText>No. of rounds: {roundsNumber}</InstructionText>
+        <PrimaryButton onPress={onRestart}>START NEW GAME</PrimaryButton>
+      </Card>
     </View>
   );
 };
