@@ -9,6 +9,7 @@ import Card from "../components/ui/Card";
 import InstructionText from "../components/ui/InstructionText";
 import ButtonsContainer from "../components/ui/ButtonsContainer.js";
 import ButtonContainer from "../components/ui/ButtonContainer.js";
+import GuessLogItem from "../components/game/GuessLogItem.js";
 
 function generateRandomBetween(min, max, exclude) {
   const rndNum = Math.floor(Math.random() * (max - min)) + min;
@@ -32,7 +33,7 @@ function GameScreen({ userNumber, onGameOver }) {
     if (currentGuess == userNumber) {
       minBoundary = 1;
       maxBoundary = 100;
-      onGameOver();
+      onGameOver(guessRounds.length);
     }
   }, [currentGuess, userNumber, onGameOver]);
 
@@ -51,7 +52,7 @@ function GameScreen({ userNumber, onGameOver }) {
     if (direction == "lower") {
       maxBoundary = currentGuess;
     } else {
-      minBoundary = currentGuess;
+      minBoundary = currentGuess + 1;
     }
     const newRndNumber = generateRandomBetween(
       minBoundary,
@@ -60,7 +61,7 @@ function GameScreen({ userNumber, onGameOver }) {
     );
 
     setCurrentGuess(newRndNumber);
-    setGuessRounds((prevGuessRounds) => [...prevGuessRounds, newRndNumber]);
+    setGuessRounds((prevGuessRounds) => [newRndNumber, ...prevGuessRounds]);
     console.log(
       "userInput:currentGuess:newRndNumber->" +
         userNumber +
@@ -100,12 +101,20 @@ function GameScreen({ userNumber, onGameOver }) {
           </ButtonContainer>
         </ButtonsContainer>
       </Card>
-      <View>
-        {guessRounds.map((guess, index) => (
-          <Text key={index}>
-            Round {index + 1}: {guess}
-          </Text>
-        ))}
+      <View style={styles.listContainer}>
+        {/* {guessRounds.map((guess, index) => (
+          <Text key={index}>Round {index + 1}: {guess}</Text>
+        ))} */}
+        <FlatList
+          data={guessRounds}
+          renderItem={(itemData) => (
+            <GuessLogItem
+              guess={itemData.item}
+              roundNumber={guessRounds.length - itemData.index}
+            />
+          )}
+          keyExtractor={(item) => item}
+        />
       </View>
       <View>
         <PrimaryButton
@@ -130,5 +139,9 @@ const styles = StyleSheet.create({
   },
   instructionText: {
     marginBottom: 10,
+  },
+  listContainer: {
+    flex: 1,
+    padding: 16,
   },
 });

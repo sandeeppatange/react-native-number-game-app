@@ -35,8 +35,9 @@ export default function App() {
 
   let screen = <StartGameScreen onStartGame={startGameHandler} />;
 
-  function gameOverHandler() {
+  function gameOverHandler(numberOfRounds) {
     setIsGameOver(true);
+    setRoundsNumber(numberOfRounds);
   }
   function startNewGameHandler() {
     setUserNumber(null);
