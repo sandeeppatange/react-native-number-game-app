@@ -1,27 +1,32 @@
 // Purpose: Main entry point for the application. This is where the app starts and renders the StartGameScreen component.
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StyleSheet, ImageBackground, SafeAreaView } from "react-native";
 import { LinearGradient } from "expo-linear-gradient"; // Import the LinearGradient component from the expo-linear-gradient library
 import { useFonts } from "expo-font";
-import AppLoading from "expo-app-loading";
+import * as SplashScreen from "expo-splash-screen";
 
 import StartGameScreen from "./screens/StartGameScreen";
 import GameScreen from "./screens/GameScreen";
 import Colors from "./constants/Colors";
 import GameOverScreen from "./screens/GameOverScreen";
 
+SplashScreen.preventAutoHideAsync();
+
 export default function App() {
   const [userNumber, setUserNumber] = useState();
   const [isGameOver, setIsGameOver] = useState(true);
+  const [roundsNumber, setRoundsNumber] = useState(0);
 
   const [fontsLoaded] = useFonts({
     "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
     "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
   });
 
-  if (!fontsLoaded) {
-    return <AppLoading />; // Return the AppLoading component if the fonts are not loaded
-  }
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
 
   function startGameHandler(selectedNumber) {
     setUserNumber(selectedNumber);
@@ -33,7 +38,7 @@ export default function App() {
   function gameOverHandler() {
     setIsGameOver(true);
   }
-  function restartGameHandler() {
+  function startNewGameHandler() {
     setUserNumber(null);
     setIsGameOver(true);
   }
@@ -45,7 +50,11 @@ export default function App() {
 
   if (isGameOver && userNumber) {
     screen = (
-      <GameOverScreen userNumber={userNumber} onRestart={restartGameHandler} />
+      <GameOverScreen
+        userNumber={userNumber}
+        roundsNumber={roundsNumber}
+        onRestart={startNewGameHandler}
+      />
     );
   }
 

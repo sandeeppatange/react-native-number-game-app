@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 
 import Title from "../components/ui/Title";
@@ -26,6 +26,7 @@ let maxBoundary = 100;
 function GameScreen({ userNumber, onGameOver }) {
   const initialGuess = generateRandomBetween(1, 100, userNumber);
   const [currentGuess, setCurrentGuess] = useState(initialGuess);
+  const [guessRounds, setGuessRounds] = useState([initialGuess]);
 
   useEffect(() => {
     if (currentGuess == userNumber) {
@@ -57,7 +58,9 @@ function GameScreen({ userNumber, onGameOver }) {
       maxBoundary,
       currentGuess
     );
+
     setCurrentGuess(newRndNumber);
+    setGuessRounds((prevGuessRounds) => [...prevGuessRounds, newRndNumber]);
     console.log(
       "userInput:currentGuess:newRndNumber->" +
         userNumber +
@@ -97,6 +100,22 @@ function GameScreen({ userNumber, onGameOver }) {
           </ButtonContainer>
         </ButtonsContainer>
       </Card>
+      <View>
+        {guessRounds.map((guess, index) => (
+          <Text key={index}>
+            Round {index + 1}: {guess}
+          </Text>
+        ))}
+      </View>
+      <View>
+        <PrimaryButton
+          onPress={() => {
+            onGameOver();
+          }}
+        >
+          <AntDesign name="reload1" size={24} color="white" />
+        </PrimaryButton>
+      </View>
     </View>
   );
 }
